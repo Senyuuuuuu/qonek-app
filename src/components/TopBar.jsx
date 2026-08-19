@@ -1,61 +1,79 @@
-import React from 'react';
-import { Search, MapPin, MoreVertical, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Bell, Sparkles } from 'lucide-react';
 
-export default function TopBar({ onEarlyAccessClick, onSearchClick }) {
+export default function TopBar({ onEarlyAccessClick, onSearchClick, activeSegment = 'for-you', onSegmentChange }) {
+  const [segment, setSegment] = useState(activeSegment);
+
+  const handleSegment = (s) => {
+    setSegment(s);
+    onSegmentChange?.(s);
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/85 backdrop-blur-xl border-b border-black/5 px-4 h-14 flex items-center justify-between transition-colors">
+    <header className="sticky top-0 z-40 w-full bg-[#8E1E28] text-white px-4 h-14 sm:h-16 flex items-center justify-between shadow-md transition-colors select-none">
       {/* Brand Logo & Name */}
       <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-xl bg-crimson flex items-center justify-center shadow-crimson-glow/40 flex-shrink-0">
-          {/* Authentic QChat Minimal Speech Bubble Logo */}
-          <svg className="w-5 h-5 text-white" viewBox="0 0 44 44" fill="none">
-            <circle cx="15" cy="22" r="3" fill="currentColor"/>
-            <circle cx="22" cy="22" r="3" fill="currentColor"/>
-            <circle cx="29" cy="22" r="3" fill="currentColor"/>
+        <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-md flex-shrink-0">
+          <svg className="w-5 h-5 text-[#8E1E28]" viewBox="0 0 44 44" fill="none">
+            <circle cx="15" cy="22" r="3.2" fill="currentColor"/>
+            <circle cx="22" cy="22" r="3.2" fill="currentColor"/>
+            <circle cx="29" cy="22" r="3.2" fill="currentColor"/>
             <path d="M8 10 Q22 6 36 10 Q40 22 36 34 L28 38 L22 34 Q8 38 8 22 Z" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round"/>
           </svg>
         </div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="font-extrabold text-lg text-crimson tracking-tight">
-            QChat
-          </span>
-          <span className="text-[10px] font-bold text-apple-subtext uppercase tracking-widest hidden sm:inline">
-            by Qonek
-          </span>
+        <span className="font-black text-xl tracking-tight text-white">
+          Qonek
+        </span>
+      </div>
+
+      {/* Center Segmented Filter (For You / Following) or Search Bar */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 text-xs font-bold">
+          <button
+            onClick={() => handleSegment('for-you')}
+            className={`transition-colors cursor-pointer ${
+              segment === 'for-you' ? 'text-white border-b-2 border-white pb-0.5' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            For You
+          </button>
+          <button
+            onClick={() => handleSegment('following')}
+            className={`transition-colors cursor-pointer ${
+              segment === 'following' ? 'text-white border-b-2 border-white pb-0.5' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            Following
+          </button>
         </div>
       </div>
 
-      {/* Action Hub */}
+      {/* Right Action Icons */}
       <div className="flex items-center gap-2">
         <button 
-          onClick={onEarlyAccessClick}
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-crimson/10 border border-crimson/30 text-crimson text-xs font-semibold hover:bg-crimson/20 transition-colors"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Early Access</span>
-        </button>
-
-        <button 
           onClick={onSearchClick}
-          className="w-9 h-9 rounded-full flex items-center justify-center text-crimson hover:bg-black/5 transition-colors"
+          className="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors"
           title="Search"
         >
-          <Search className="w-5 h-5 stroke-[2.2]" />
+          <Search className="w-4 h-4 stroke-[2.4]" />
         </button>
 
         <button 
-          className="w-9 h-9 rounded-full flex items-center justify-center text-crimson hover:bg-black/5 transition-colors"
-          title="Nearby Discover"
+          onClick={onEarlyAccessClick}
+          className="relative w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          title="Notifications"
         >
-          <MapPin className="w-5 h-5 stroke-[2.2]" />
+          <Bell className="w-4 h-4 stroke-[2.4]" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-[#8E1E28]" />
         </button>
 
-        <button 
-          className="w-9 h-9 rounded-full flex items-center justify-center text-crimson hover:bg-black/5 transition-colors"
-          title="More options"
-        >
-          <MoreVertical className="w-5 h-5 stroke-[2.2]" />
-        </button>
+        <div className="w-8 h-8 rounded-full overflow-hidden border border-white/40 ml-1">
+          <img 
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80&fit=crop&crop=face" 
+            alt="User" 
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
     </header>
   );

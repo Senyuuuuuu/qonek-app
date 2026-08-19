@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function PostCard({ post, onCommentClick, onShareClick }) {
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
-  const [likesCount, setLikesCount] = useState(post.likes || 128);
+  const [likesCount, setLikesCount] = useState(post.likes || 1245);
   const [isSaved, setIsSaved] = useState(post.isSaved || false);
 
   const toggleLike = () => {
@@ -17,12 +17,12 @@ export default function PostCard({ post, onCommentClick, onShareClick }) {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-      className="bg-white rounded-2xl md:rounded-3xl border border-black/5 shadow-apple-sm overflow-hidden mb-4 transition-shadow hover:shadow-apple-md"
+      className="bg-white rounded-3xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden mb-5 transition-shadow hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
     >
       {/* Post Header */}
       <header className="flex items-center justify-between px-4 py-3.5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden border border-black/5 p-[1px] bg-gradient-to-tr from-crimson to-amber-500 flex-shrink-0">
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-black/5 p-[1px] bg-gradient-to-tr from-[#8E1E28] to-[#E74C3C] flex-shrink-0">
             <img 
               src={post.user.avatar} 
               alt={post.user.name} 
@@ -31,29 +31,29 @@ export default function PostCard({ post, onCommentClick, onShareClick }) {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-sm text-apple-text tracking-tight hover:underline cursor-pointer">
+              <span className="font-extrabold text-sm text-gray-900 tracking-tight hover:underline cursor-pointer">
                 {post.user.name}
               </span>
               {post.user.verified && (
-                <span className="w-4 h-4 rounded-full bg-crimson text-white text-[9px] font-bold flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-[#8E1E28] text-white text-[9px] font-black flex items-center justify-center">
                   ✓
                 </span>
               )}
             </div>
-            <p className="text-[12px] text-apple-subtext">
+            <p className="text-[11px] text-gray-400 font-medium">
               @{post.user.handle} · {post.timestamp}
             </p>
           </div>
         </div>
 
-        <button className="p-1.5 rounded-full text-apple-subtext hover:text-apple-text hover:bg-black/5 transition-colors">
+        <button className="p-2 rounded-full text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-colors">
           <MoreHorizontal className="w-5 h-5" />
         </button>
       </header>
 
-      {/* Post Media - Natural Candid Photography */}
+      {/* Post Media - Natural High-Res Photography */}
       {post.image && (
-        <div className="relative w-full aspect-[4/3] md:aspect-[16/10] bg-gray-100 overflow-hidden">
+        <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-gray-100 overflow-hidden">
           <img 
             src={post.image} 
             alt={post.caption || "Post photo"} 
@@ -66,15 +66,15 @@ export default function PostCard({ post, onCommentClick, onShareClick }) {
       {/* Post Content */}
       <div className="px-4 pt-3.5 pb-2">
         {post.caption && (
-          <p className="text-sm text-apple-text leading-relaxed">
-            <span className="font-semibold mr-1.5">{post.user.handle}</span>
+          <p className="text-sm text-gray-800 leading-relaxed font-medium">
+            <span className="font-bold mr-1.5 text-gray-900">{post.user.handle}</span>
             {post.caption}
           </p>
         )}
         {post.tags && (
           <div className="flex flex-wrap gap-1.5 mt-2">
             {post.tags.map((tag, i) => (
-              <span key={i} className="text-xs font-medium text-crimson hover:underline cursor-pointer">
+              <span key={i} className="text-xs font-bold text-[#8E1E28] hover:underline cursor-pointer">
                 #{tag}
               </span>
             ))}
@@ -88,17 +88,17 @@ export default function PostCard({ post, onCommentClick, onShareClick }) {
           <motion.button 
             whileTap={{ scale: 0.8 }}
             onClick={toggleLike}
-            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${
-              isLiked ? 'text-crimson' : 'text-apple-subtext hover:text-apple-text'
+            className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${
+              isLiked ? 'text-[#8E1E28]' : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <Heart className={`w-5 h-5 transition-transform ${isLiked ? 'fill-crimson stroke-crimson scale-110' : ''}`} />
+            <Heart className={`w-5 h-5 transition-transform ${isLiked ? 'fill-[#8E1E28] stroke-[#8E1E28] scale-110' : ''}`} />
             <span>{likesCount.toLocaleString()}</span>
           </motion.button>
 
           <button 
             onClick={onCommentClick}
-            className="flex items-center gap-1.5 text-xs font-semibold text-apple-subtext hover:text-apple-text transition-colors"
+            className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors"
           >
             <MessageCircle className="w-5 h-5" />
             <span>{post.commentsCount || 18}</span>
@@ -106,7 +106,7 @@ export default function PostCard({ post, onCommentClick, onShareClick }) {
 
           <button 
             onClick={onShareClick}
-            className="p-1 text-apple-subtext hover:text-apple-text transition-colors"
+            className="p-1 text-gray-500 hover:text-gray-900 transition-colors"
           >
             <Send className="w-5 h-5 -rotate-12" />
           </button>
@@ -116,10 +116,10 @@ export default function PostCard({ post, onCommentClick, onShareClick }) {
           whileTap={{ scale: 0.85 }}
           onClick={() => setIsSaved(!isSaved)}
           className={`p-1 transition-colors ${
-            isSaved ? 'text-crimson' : 'text-apple-subtext hover:text-apple-text'
+            isSaved ? 'text-[#8E1E28]' : 'text-gray-400 hover:text-gray-900'
           }`}
         >
-          <Bookmark className={`w-5 h-5 ${isSaved ? 'fill-crimson stroke-crimson' : ''}`} />
+          <Bookmark className={`w-5 h-5 ${isSaved ? 'fill-[#8E1E28] stroke-[#8E1E28]' : ''}`} />
         </motion.button>
       </footer>
     </motion.article>
