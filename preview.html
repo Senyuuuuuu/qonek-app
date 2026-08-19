@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qonek — Live Preview Demo</title>
+  <meta name="description" content="Preview Qonek across all your devices — mobile, tablet, and desktop." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --crimson: #A62C37;
+      --crimson-2: #C0392B;
+      --crimson-light: #E74C3C;
+      --crimson-glow: rgba(166,44,55,0.2);
+      --dark: #0A0A0F;
+      --dark-2: #111118;
+      --dark-3: #18181F;
+      --dark-4: #22222A;
+      --white: #FFFFFF;
+      --off-white: #F5F5F7;
+      --grey-text: rgba(255,255,255,0.5);
+      --grey-dim: rgba(255,255,255,0.08);
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-display: 'Instrument Serif', serif;
+      --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+      --ease-apple: cubic-bezier(0.25,0.1,0.25,1);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--dark); color: var(--white); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,15,0.8);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 9px;
+      background: var(--crimson); display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 900; color: #fff;
+    }
+    .nav-logo-text { font-size: 1.05rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.45rem 1rem; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.82rem; font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .nav-back:hover { border-color: rgba(166,44,55,0.4); color: #fff; background: rgba(166,44,55,0.08); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 9rem 1.5rem 4rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(166,44,55,0.2) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.4rem 1rem; border-radius: 100px;
+      border: 1px solid rgba(166,44,55,0.35); background: rgba(166,44,55,0.1);
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #FF8080; margin-bottom: 1.75rem;
+    }
+    .hero-chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #FF8080; box-shadow: 0 0 8px #FF8080; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 400; letter-spacing: -0.03em; line-height: 1.08;
+      margin-bottom: 1.25rem; position: relative;
+    }
+    .hero h1 em { font-style: italic; color: var(--crimson-light); }
+    .hero p {
+      font-size: clamp(0.95rem, 1.8vw, 1.1rem); color: var(--grey-text);
+      max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.7; position: relative;
+    }
+
+    /* ─── DEVICE TAB SWITCHER ─── */
+    .tab-bar {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      margin-bottom: 3rem; position: relative; z-index: 2;
+    }
+    .tab-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.4rem; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.45); font-family: var(--font);
+      font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      transition: all 0.25s var(--ease-apple);
+    }
+    .tab-btn.active {
+      background: var(--crimson); border-color: var(--crimson);
+      color: #fff; box-shadow: 0 4px 20px rgba(166,44,55,0.4);
+    }
+    .tab-btn:hover:not(.active) { border-color: rgba(166,44,55,0.4); color: #fff; background: rgba(166,44,55,0.08); }
+    .tab-icon { font-size: 1rem; }
+
+    /* ─── DEVICE STAGES ─── */
+    .device-stage {
+      display: none; opacity: 0;
+      transition: opacity 0.35s ease;
+      align-items: center; justify-content: center;
+      padding: 0 1rem 5rem;
+    }
+    .device-stage.active { display: flex; opacity: 1; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ═══════════════════════════════
+       PHONE FRAME
+    ═══════════════════════════════ */
+    .phone-outer {
+      width: 375px; height: 812px;
+      background: #1A1A1A;
+      border-radius: 54px;
+      padding: 12px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.15),
+        0 60px 120px rgba(0,0,0,0.8),
+        0 0 60px rgba(166,44,55,0.1),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative; flex-shrink: 0;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      background: var(--off-white);
+      border-radius: 44px; overflow: hidden;
+      position: relative;
+    }
+    .phone-notch {
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 34px;
+      background: #1A1A1A; border-radius: 0 0 22px 22px;
+      z-index: 100;
+    }
+    .phone-notch-inner {
+      position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 8px;
+      background: #0A0A0A; border-radius: 4px;
+    }
+
+    /* ═══════════════════════════════
+       TABLET FRAME
+    ═══════════════════════════════ */
+    .tablet-outer {
+      width: 820px; height: 590px;
+      background: #1A1A1A;
+      border-radius: 28px; padding: 14px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.15),
+        0 60px 120px rgba(0,0,0,0.8),
+        0 0 60px rgba(166,44,55,0.1),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative; flex-shrink: 0;
+    }
+    .tablet-screen {
+      width: 100%; height: 100%;
+      background: var(--off-white);
+      border-radius: 16px; overflow: hidden;
+      position: relative;
+    }
+    .tablet-cam {
+      position: absolute; top: 50%; right: 7px; transform: translateY(-50%);
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #2A2A2A; border: 1px solid #333; z-index: 100;
+    }
+
+    /* ═══════════════════════════════
+       LAPTOP FRAME
+    ═══════════════════════════════ */
+    .laptop-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1100px; }
+    .laptop-outer {
+      width: 100%; max-width: 1000px;
+      background: #1F1F1F;
+      border-radius: 16px 16px 0 0; padding: 16px 16px 0;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.1),
+        0 -2px 0 rgba(255,255,255,0.05) inset,
+        0 40px 100px rgba(0,0,0,0.7),
+        0 0 60px rgba(166,44,55,0.1);
+      position: relative;
+    }
+    .laptop-cam-bar {
+      position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .laptop-cam-dot { width: 7px; height: 7px; border-radius: 50%; background: #2F2F2F; border: 1px solid #3A3A3A; }
+    .laptop-screen {
+      width: 100%; aspect-ratio: 16/10;
+      background: var(--off-white);
+      border-radius: 8px; overflow: hidden;
+    }
+    .laptop-base {
+      width: 110%; max-width: 1100px;
+      height: 22px; background: #242424;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    }
+    .laptop-notch-base {
+      width: 200px; height: 8px;
+      background: #1A1A1A; border-radius: 0 0 8px 8px;
+      margin: 0 auto; position: relative; top: -1px;
+    }
+
+    /* ═══════════════════════════════
+       QONEK APP UI — SHARED
+    ═══════════════════════════════ */
+    .app-bg { background: var(--off-white); width: 100%; height: 100%; overflow: hidden; position: relative; font-family: var(--font); }
+
+    /* Top App Bar */
+    .app-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1rem; height: 52px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .app-logo { display: flex; align-items: center; gap: 0.5rem; }
+    .app-logo-sq {
+      width: 30px; height: 30px; border-radius: 9px;
+      background: var(--crimson); display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 0.9rem;
+    }
+    .app-logo-name { font-size: 1rem; font-weight: 800; color: #1C1C1E; letter-spacing: -0.02em; }
+    .app-topbar-icons { display: flex; gap: 0.6rem; }
+    .app-icon-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(0,0,0,0.05); border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; cursor: pointer; color: #1C1C1E;
+    }
+
+    /* Story Strip */
+    .story-strip {
+      display: flex; gap: 0.85rem; padding: 0.85rem 1rem;
+      overflow-x: auto; background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      scrollbar-width: none;
+    }
+    .story-strip::-webkit-scrollbar { display: none; }
+    .story-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+    .story-ring {
+      width: 56px; height: 56px; border-radius: 50%;
+      padding: 2.5px;
+      background: linear-gradient(135deg, var(--crimson), #FF8C00);
+    }
+    .story-ring.unseen { background: rgba(0,0,0,0.08); }
+    .story-avatar {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: #ddd; border: 2.5px solid #fff;
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+    }
+    .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .story-label { font-size: 0.62rem; color: #1C1C1E; font-weight: 500; max-width: 56px; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .story-add-btn {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(0,0,0,0.05); border: 2px dashed rgba(0,0,0,0.15);
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #666;
+    }
+
+    /* Feed Scroll */
+    .feed-scroll { overflow-y: auto; flex: 1; scrollbar-width: none; }
+    .feed-scroll::-webkit-scrollbar { display: none; }
+
+    /* Post Card */
+    .post-card {
+      background: #fff; margin: 0.6rem 0.75rem;
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .post-header { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 0.9rem 0.6rem; }
+    .post-user { display: flex; align-items: center; gap: 0.6rem; }
+    .post-avatar {
+      width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+      background: linear-gradient(135deg, var(--crimson), #FF8C00);
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .post-name { font-size: 0.82rem; font-weight: 700; color: #1C1C1E; }
+    .post-time { font-size: 0.7rem; color: #8E8E93; }
+    .post-more { font-size: 1.1rem; color: #8E8E93; cursor: pointer; }
+    .post-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); display: flex; align-items: center; justify-content: center; color: #bbb; font-size: 2rem; }
+    .post-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .post-caption { padding: 0.65rem 0.9rem 0.3rem; font-size: 0.8rem; color: #1C1C1E; line-height: 1.5; }
+    .post-caption b { font-weight: 700; }
+    .post-actions { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.9rem 0.8rem; }
+    .post-action-left { display: flex; gap: 1rem; }
+    .p-act { display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; color: #636366; cursor: pointer; transition: color 0.15s ease; }
+    .p-act:hover { color: var(--crimson); }
+    .p-act.liked { color: var(--crimson); }
+    .p-act svg { width: 18px; height: 18px; }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      position: absolute; bottom: 12px; left: 12px; right: 12px;
+      height: 64px; border-radius: 32px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: space-around; padding: 0 1rem;
+      z-index: 50;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+    .nav-item svg { width: 22px; height: 22px; stroke: #8E8E93; fill: none; stroke-width: 1.8; stroke-linecap: round; transition: stroke 0.15s ease; }
+    .nav-item.active svg { stroke: var(--crimson); }
+    .nav-cta {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--crimson) 0%, #E74C3C 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(166,44,55,0.45), 0 2px 6px rgba(166,44,55,0.3);
+      cursor: pointer; transition: transform 0.2s var(--ease-spring);
+      margin-top: -14px;
+    }
+    .nav-cta:hover { transform: scale(1.08); }
+    .nav-cta svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+    /* ── CHAT VIEW ── */
+    .chat-view { display: flex; flex-direction: column; height: 100%; background: var(--off-white); }
+    .chat-search { padding: 0.75rem 1rem; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .chat-search input {
+      width: 100%; padding: 0.55rem 0.9rem; border-radius: 12px;
+      background: rgba(0,0,0,0.06); border: none; outline: none;
+      font-family: var(--font); font-size: 0.82rem; color: #1C1C1E;
+    }
+    .chat-list { flex: 1; overflow-y: auto; scrollbar-width: none; }
+    .chat-list::-webkit-scrollbar { display: none; }
+    .chat-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem; background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .chat-item:hover { background: rgba(0,0,0,0.02); }
+    .chat-avatar {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+      background: linear-gradient(135deg, var(--crimson), #FF8C00);
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem;
+    }
+    .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .chat-info { flex: 1; min-width: 0; }
+    .chat-name { font-size: 0.85rem; font-weight: 700; color: #1C1C1E; }
+    .chat-preview { font-size: 0.75rem; color: #8E8E93; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .chat-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .chat-time { font-size: 0.68rem; color: #8E8E93; }
+    .chat-badge {
+      background: var(--crimson); color: #fff;
+      font-size: 0.62rem; font-weight: 700;
+      min-width: 18px; height: 18px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
+    }
+
+    /* ── ACTIVE CHAT SCREEN ── */
+    .active-chat { display: flex; flex-direction: column; height: 100%; background: #fff; }
+    .active-chat-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.07);
+      background: rgba(255,255,255,0.9); backdrop-filter: blur(16px);
+    }
+    .active-chat-back { font-size: 1.2rem; cursor: pointer; color: var(--crimson); }
+    .active-chat-info { flex: 1; }
+    .active-chat-name { font-size: 0.9rem; font-weight: 700; color: #1C1C1E; }
+    .active-chat-status { font-size: 0.72rem; color: #34C759; font-weight: 500; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; scrollbar-width: none; background: #F8F8F8; }
+    .chat-messages::-webkit-scrollbar { display: none; }
+    .msg { max-width: 72%; }
+    .msg.sent { align-self: flex-end; }
+    .msg.recv { align-self: flex-start; }
+    .msg-bubble {
+      padding: 0.6rem 0.9rem; border-radius: 18px; font-size: 0.82rem; line-height: 1.5;
+    }
+    .msg.sent .msg-bubble { background: var(--crimson); color: #fff; border-radius: 18px 18px 4px 18px; }
+    .msg.recv .msg-bubble { background: #fff; color: #1C1C1E; border-radius: 18px 18px 18px 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .msg-time { font-size: 0.62rem; color: #8E8E93; margin-top: 3px; text-align: right; }
+    .msg.recv .msg-time { text-align: left; }
+    .chat-input-bar {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.75rem 1rem; border-top: 1px solid rgba(0,0,0,0.07);
+      background: #fff;
+    }
+    .chat-input {
+      flex: 1; padding: 0.55rem 0.9rem; border-radius: 20px;
+      background: rgba(0,0,0,0.06); border: none; outline: none;
+      font-family: var(--font); font-size: 0.82rem; color: #1C1C1E;
+    }
+    .chat-send-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--crimson); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chat-send-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+    /* ─── TABLET APP LAYOUT ─── */
+    .tablet-app { display: flex; height: 100%; background: var(--off-white); }
+    .tablet-sidebar {
+      width: 240px; background: #fff; border-right: 1px solid rgba(0,0,0,0.07);
+      display: flex; flex-direction: column; padding: 1rem 0; flex-shrink: 0;
+    }
+    .tablet-logo { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 1.25rem 1.25rem; }
+    .tablet-logo-sq {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: var(--crimson); display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 0.95rem;
+    }
+    .tablet-logo-name { font-size: 1rem; font-weight: 800; color: #1C1C1E; letter-spacing: -0.02em; }
+    .tablet-nav-item {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 0.7rem 1.25rem; cursor: pointer; color: #636366;
+      font-size: 0.85rem; font-weight: 600; transition: all 0.15s ease; border-radius: 0;
+      margin: 1px 0;
+    }
+    .tablet-nav-item:hover { background: rgba(0,0,0,0.03); color: #1C1C1E; }
+    .tablet-nav-item.active { color: var(--crimson); background: rgba(166,44,55,0.07); }
+    .tablet-nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .tablet-main { flex: 1; overflow-y: auto; scrollbar-width: none; }
+    .tablet-main::-webkit-scrollbar { display: none; }
+    .tablet-right { width: 260px; border-left: 1px solid rgba(0,0,0,0.07); background: #fff; display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+    .tablet-right-title { font-size: 0.8rem; font-weight: 700; color: #1C1C1E; padding: 1rem 1rem 0.6rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* ─── LAPTOP APP LAYOUT ─── */
+    .laptop-app { display: flex; height: 100%; background: var(--off-white); }
+    .laptop-sidebar {
+      width: 64px; background: #fff; border-right: 1px solid rgba(0,0,0,0.07);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 1rem 0; gap: 0.25rem; flex-shrink: 0;
+    }
+    .laptop-logo-sq {
+      width: 36px; height: 36px; border-radius: 11px; margin-bottom: 0.75rem;
+      background: var(--crimson); display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 1rem;
+    }
+    .laptop-nav-icon {
+      width: 40px; height: 40px; border-radius: 12px; border: none;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      background: transparent; color: #8E8E93; transition: all 0.15s ease;
+    }
+    .laptop-nav-icon:hover { background: rgba(0,0,0,0.05); color: #1C1C1E; }
+    .laptop-nav-icon.active { background: rgba(166,44,55,0.1); color: var(--crimson); }
+    .laptop-nav-icon svg { width: 20px; height: 20px; }
+    .laptop-feed { flex: 1; max-width: 500px; border-right: 1px solid rgba(0,0,0,0.07); overflow-y: auto; scrollbar-width: none; }
+    .laptop-feed::-webkit-scrollbar { display: none; }
+    .laptop-feed-header { padding: 1rem 1rem 0; display: flex; align-items: center; justify-content: space-between; }
+    .laptop-feed-title { font-size: 1rem; font-weight: 800; color: #1C1C1E; }
+    .laptop-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .laptop-right-header { padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.07); font-size: 0.85rem; font-weight: 700; color: #1C1C1E; }
+    .laptop-trending { padding: 0 0.75rem; }
+    .trending-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.25rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .trending-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; overflow: hidden; background: linear-gradient(135deg, var(--crimson), #FF8C00); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.85rem; }
+    .trending-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .trending-name { font-size: 0.8rem; font-weight: 700; color: #1C1C1E; }
+    .trending-handle { font-size: 0.7rem; color: #8E8E93; }
+    .follow-btn {
+      margin-left: auto; padding: 0.3rem 0.75rem; border-radius: 100px;
+      border: 1px solid var(--crimson); background: transparent; color: var(--crimson);
+      font-family: var(--font); font-size: 0.72rem; font-weight: 700; cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .follow-btn:hover { background: var(--crimson); color: #fff; }
+
+    /* ─── SCREEN INNER LAYOUTS ─── */
+    .phone-inner { display: flex; flex-direction: column; height: 100%; padding-top: 46px; }
+    .phone-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding-bottom: 76px; }
+
+    /* ─── SECTION BELOW ─── */
+    .specs-section {
+      padding: 6rem 1.5rem;
+      max-width: 960px; margin: 0 auto;
+    }
+    .specs-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--crimson-light); text-align: center; margin-bottom: 1rem; }
+    .specs-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); text-align: center; letter-spacing: -0.02em; margin-bottom: 4rem; }
+    .specs-title em { font-style: italic; color: var(--crimson-light); }
+    .specs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .spec-card {
+      background: var(--dark-2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 1.75rem;
+      transition: all 0.3s ease;
+    }
+    .spec-card:hover { border-color: rgba(166,44,55,0.3); transform: translateY(-4px); box-shadow: 0 20px 48px rgba(166,44,55,0.08); }
+    .spec-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+    .spec-heading { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .spec-body { font-size: 0.85rem; color: var(--grey-text); line-height: 1.65; }
+
+    /* ─── CTA ─── */
+    .preview-cta {
+      padding: 6rem 1.5rem; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .preview-cta h2 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .preview-cta h2 em { font-style: italic; color: var(--crimson-light); }
+    .preview-cta p { color: var(--grey-text); font-size: 1rem; margin-bottom: 2.5rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2rem; background: var(--crimson); color: #fff;
+      border-radius: 100px; text-decoration: none; font-weight: 700; font-size: 0.95rem;
+      box-shadow: 0 4px 24px rgba(166,44,55,0.4); transition: all 0.2s ease;
+    }
+    .btn-primary:hover { background: var(--crimson-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(166,44,55,0.5); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .tablet-outer { width: 96vw; height: auto; aspect-ratio: 4/3; }
+      .laptop-outer { max-width: 96vw; }
+      .specs-grid { grid-template-columns: 1fr; }
+      .phone-outer { width: 320px; height: 693px; }
+    }
+    @media (max-width: 600px) {
+      .tab-bar { gap: 0.35rem; }
+      .tab-btn { padding: 0.5rem 0.9rem; font-size: 0.8rem; }
+      .phone-outer { width: 280px; height: 607px; }
+      nav { padding: 0.85rem 1.25rem; }
+    }
+
+    /* Colors for story avatars */
+    .av-r { background: linear-gradient(135deg, #C0392B, #E74C3C) !important; }
+    .av-b { background: linear-gradient(135deg, #2980B9, #3498DB) !important; }
+    .av-g { background: linear-gradient(135deg, #27AE60, #2ECC71) !important; }
+    .av-p { background: linear-gradient(135deg, #8E44AD, #9B59B6) !important; }
+    .av-o { background: linear-gradient(135deg, #E67E22, #F39C12) !important; }
+    .av-t { background: linear-gradient(135deg, #16A085, #1ABC9C) !important; }
+
+    /* Image placeholders using Unsplash */
+    .img-post { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">Q</div>
+    <span class="nav-logo-text">Qonek</span>
+  </a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-chip">Live Preview Demo</div>
+  <h1>Experience Qonek<br>on <em>every</em> screen</h1>
+  <p>See how Qonek adapts beautifully across your iPhone, iPad, and desktop — one app, every device, zero compromise.</p>
+</section>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('phone')" id="tab-phone">
+    <span class="tab-icon">📱</span> iPhone
+  </button>
+  <button class="tab-btn" onclick="switchTab('tablet')" id="tab-tablet">
+    <span class="tab-icon">📲</span> iPad
+  </button>
+  <button class="tab-btn" onclick="switchTab('laptop')" id="tab-laptop">
+    <span class="tab-icon">💻</span> MacBook
+  </button>
+</div>
+
+<!-- ═══════════ PHONE STAGE ═══════════ -->
+<div class="device-stage active" id="stage-phone">
+  <div class="phone-outer">
+    <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+    <div class="phone-screen">
+      <div class="app-bg">
+        <!-- ── CHAT LIST VIEW (matches real QChat app) ── -->
+        <div style="display:flex;flex-direction:column;height:100%;padding-top:46px;" id="phone-home-view">
+          <!-- Top Bar -->
+          <div class="app-topbar" style="padding:0 1.1rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <svg width="28" height="28" viewBox="0 0 44 44" fill="none">
+                <rect width="44" height="44" rx="12" fill="#C0392B"/>
+                <circle cx="15" cy="22" r="3" fill="white"/>
+                <circle cx="22" cy="22" r="3" fill="white"/>
+                <circle cx="29" cy="22" r="3" fill="white"/>
+                <path d="M8 12 Q22 8 36 12 Q40 22 36 32 L28 36 L22 32 Q8 36 8 22 Z" fill="none" stroke="white" stroke-width="2.5"/>
+              </svg>
+              <span style="font-size:1.05rem;font-weight:800;color:#C0392B;letter-spacing:-0.02em">QChat</span>
+            </div>
+            <div style="display:flex;gap:0.5rem;">
+              <button class="app-icon-btn" style="color:#C0392B;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+              <button class="app-icon-btn" style="color:#C0392B;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              </button>
+              <button class="app-icon-btn" style="color:#C0392B;">⋮</button>
+            </div>
+          </div>
+          <!-- Tabs: Chats / Group / Archive -->
+          <div style="display:flex;align-items:center;gap:0;background:#fff;border-bottom:1px solid rgba(0,0,0,0.07);padding:0 1rem;">
+            <button onclick="setChatTab(this,'chats')" class="chat-tab active-tab" style="flex:1;padding:0.65rem 0;font-size:0.82rem;font-weight:700;border:none;background:#C0392B;color:#fff;border-radius:100px;margin:0.5rem 0.25rem 0.5rem 0;cursor:pointer;transition:all 0.2s;">Chats</button>
+            <button onclick="setChatTab(this,'group')" class="chat-tab" style="flex:1;padding:0.65rem 0;font-size:0.82rem;font-weight:600;border:none;background:transparent;color:#8E8E93;border-radius:100px;margin:0.5rem 0.25rem;cursor:pointer;transition:all 0.2s;">Group</button>
+            <button onclick="setChatTab(this,'archive')" class="chat-tab" style="flex:1;padding:0.65rem 0;font-size:0.82rem;font-weight:600;border:none;background:transparent;color:#8E8E93;border-radius:100px;margin:0.5rem 0 0.5rem 0.25rem;cursor:pointer;transition:all 0.2s;">Archive</button>
+          </div>
+          <!-- Chat List -->
+          <div style="flex:1;overflow-y:auto;background:#f2f2f7;scrollbar-width:none;" id="chat-tab-chats">
+            <div style="background:#fff;margin:0;">
+              <div class="chat-item" onclick="showActiveChat('Qonek Mega','qonekm')" style="padding:0.9rem 1.1rem;">
+                <div style="width:46px;height:46px;border-radius:50%;background:#C0392B;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                  <svg width="28" height="28" viewBox="0 0 44 44" fill="none">
+                    <circle cx="15" cy="22" r="3" fill="white"/>
+                    <circle cx="22" cy="22" r="3" fill="white"/>
+                    <circle cx="29" cy="22" r="3" fill="white"/>
+                    <path d="M8 10 Q22 6 36 10 Q40 22 36 34 L28 38 L22 34 Q8 38 8 22 Z" fill="none" stroke="white" stroke-width="2.5"/>
+                  </svg>
+                </div>
+                <div class="chat-info" style="margin-left:0.85rem;">
+                  <div class="chat-name" style="font-size:0.9rem;">Qonek Mega</div>
+                  <div class="chat-preview" style="font-size:0.78rem;">Hi</div>
+                </div>
+                <div class="chat-meta">
+                  <div class="chat-time">Just now</div>
+                </div>
+              </div>
+              <div class="chat-item" onclick="showActiveChat('Jam Aracan','jamarcan')" style="padding:0.9rem 1.1rem;border-top:1px solid rgba(0,0,0,0.05);">
+                <div style="width:46px;height:46px;border-radius:50%;background:#ddd;overflow:hidden;flex-shrink:0;">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop&crop=face" style="width:100%;height:100%;object-fit:cover;" alt="Jam" loading="lazy"/>
+                </div>
+                <div class="chat-info" style="margin-left:0.85rem;">
+                  <div class="chat-name" style="font-size:0.9rem;">Jam Aracan</div>
+                  <div class="chat-preview" style="font-size:0.78rem;display:flex;align-items:center;gap:0.3rem;"><span style="color:#C0392B;font-size:0.7rem;">●</span> Last Message</div>
+                </div>
+                <div class="chat-meta">
+                  <div class="chat-time">14 D</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Bottom Nav (real QChat style) -->
+          <div style="position:relative;height:70px;background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border-top:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:space-around;padding:0 0.5rem;">
+            <button style="width:44px;height:44px;border-radius:50%;background:#E8F0FE;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button style="width:44px;height:44px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showSettings()">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
+            <button style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#C0392B,#E74C3C);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(192,57,43,0.4);margin-top:-8px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <button style="width:44px;height:44px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </button>
+            <button style="width:44px;height:44px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showSettings()">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── ACTIVE CHAT VIEW (matches real QChat) ── -->
+        <div style="display:none;position:absolute;inset:0;padding-top:46px;flex-direction:column;" id="phone-chat-view">
+          <div style="display:flex;flex-direction:column;height:100%;background:#f2f2f7;">
+            <!-- Chat Header -->
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;background:rgba(255,255,255,0.95);border-bottom:1px solid rgba(0,0,0,0.08);">
+              <button onclick="showPhoneHome()" style="background:none;border:none;color:#C0392B;font-size:1.3rem;cursor:pointer;">‹</button>
+              <div style="width:36px;height:36px;border-radius:50%;background:#C0392B;display:flex;align-items:center;justify-content:center;">
+                <svg width="22" height="22" viewBox="0 0 44 44" fill="none"><circle cx="15" cy="22" r="3" fill="white"/><circle cx="22" cy="22" r="3" fill="white"/><circle cx="29" cy="22" r="3" fill="white"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:0.9rem;font-weight:700;color:#1C1C1E;" id="chat-name">Qonek Mega</div>
+                <div style="font-size:0.72rem;color:#34C759;font-weight:500;">Online</div>
+              </div>
+              <div style="display:flex;gap:0.5rem;">
+                <button class="app-icon-btn" style="color:#C0392B;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="15" height="10" rx="2"/><path d="M17 9l5-2v10l-5-2"/></svg></button>
+                <button class="app-icon-btn" style="color:#C0392B;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.61 19a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 3.1 4.19 2 2 0 0 1 5.07 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+                <button class="app-icon-btn">⋮</button>
+              </div>
+            </div>
+            <!-- Messages -->
+            <div style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.5rem;scrollbar-width:none;">
+              <div style="font-size:0.7rem;color:#8E8E93;text-align:center;margin:0.25rem 0;">09:32 AM</div>
+              <div class="msg recv"><div class="msg-bubble" style="font-size:0.83rem;">Hello</div><div class="msg-time">09:32 AM</div></div>
+              <div class="msg sent"><div class="msg-bubble" style="font-size:0.83rem;">yes</div><div class="msg-time" style="display:flex;align-items:center;gap:3px;justify-content:flex-end;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>09:32 AM</div></div>
+              <div class="msg recv"><div class="msg-bubble" style="font-size:0.83rem;">Hello bro</div><div class="msg-time">03:09 PM</div></div>
+              <div class="msg sent"><div class="msg-bubble" style="font-size:0.83rem;">Great shopify</div><div class="msg-time" style="display:flex;align-items:center;gap:3px;justify-content:flex-end;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>07:36 AM</div></div>
+              <div class="msg sent"><div class="msg-bubble" style="font-size:0.83rem;">Hi</div><div class="msg-time" style="display:flex;align-items:center;gap:3px;justify-content:flex-end;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>10:39 AM</div></div>
+              <div class="msg recv"><div class="msg-bubble" style="font-size:0.83rem;">Yes bro</div><div class="msg-time">10:40 AM</div></div>
+              <div class="msg sent"><div class="msg-bubble" style="font-size:0.83rem;">Testing the app bro from QChat</div><div class="msg-time" style="display:flex;align-items:center;gap:3px;justify-content:flex-end;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>10:41 AM</div></div>
+              <div class="msg sent"><div class="msg-bubble" style="font-size:0.83rem;">iOS</div><div class="msg-time" style="display:flex;align-items:center;gap:3px;justify-content:flex-end;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>10:41 AM</div></div>
+              <div class="msg recv"><div class="msg-bubble" style="font-size:0.83rem;">Okay bro</div><div class="msg-time">10:41 AM</div></div>
+            </div>
+            <!-- Input Bar -->
+            <div style="display:flex;align-items:center;gap:0.6rem;padding:0.65rem 0.85rem;background:#fff;border-top:1px solid rgba(0,0,0,0.07);">
+              <button style="width:36px;height:36px;border-radius:50%;background:#f2f2f7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;width:14px;height:14px;">
+                  <div style="width:6px;height:6px;border-radius:1px;background:#C0392B;"></div>
+                  <div style="width:6px;height:6px;border-radius:1px;background:#E74C3C;"></div>
+                  <div style="width:6px;height:6px;border-radius:1px;background:#E74C3C;"></div>
+                  <div style="width:6px;height:6px;border-radius:1px;background:#C0392B;"></div>
+                </div>
+              </button>
+              <input class="chat-input" type="text" placeholder="Write your message..." style="flex:1;font-size:0.82rem;" />
+              <button class="app-icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+              <button class="app-icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SETTINGS VIEW ── -->
+        <div style="display:none;position:absolute;inset:0;padding-top:46px;" id="phone-settings-view">
+          <div style="display:flex;flex-direction:column;height:100%;background:#f2f2f7;overflow-y:auto;scrollbar-width:none;">
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;background:rgba(255,255,255,0.95);border-bottom:1px solid rgba(0,0,0,0.08);">
+              <button onclick="showPhoneHome()" style="background:none;border:none;color:#C0392B;font-size:1.2rem;cursor:pointer;">←</button>
+              <span style="font-size:0.95rem;font-weight:700;color:#1C1C1E;">Settings</span>
+              <button style="margin-left:auto;background:none;border:none;">⋮</button>
+            </div>
+            <!-- Profile -->
+            <div style="display:flex;align-items:center;gap:0.9rem;padding:1.1rem;background:#fff;margin-bottom:0.5rem;">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80&fit=crop&crop=face" style="width:56px;height:56px;border-radius:50%;object-fit:cover;" alt="Profile" loading="lazy"/>
+              <div>
+                <div style="font-size:0.95rem;font-weight:700;color:#1C1C1E;">Mahmudul Hasan</div>
+                <div style="font-size:0.78rem;color:#8E8E93;">@mahmudul.hasan</div>
+              </div>
+              <button style="margin-left:auto;background:none;border:none;color:#8E8E93;font-size:1rem;">∨</button>
+            </div>
+            <!-- General section -->
+            <div style="font-size:0.8rem;font-weight:700;color:#636366;padding:0.75rem 1.1rem 0.35rem;text-transform:uppercase;letter-spacing:0.06em;">General</div>
+            <div style="background:#fff;border-radius:14px;margin:0 0.75rem;overflow:hidden;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,0,0,0.06);">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Personal information</div><div style="font-size:0.72rem;color:#8E8E93;margin-top:2px;">Update your name and personal information</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,0,0,0.06);">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Account information</div><div style="font-size:0.72rem;color:#8E8E93;margin-top:2px;">Update the contact information</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,0,0,0.06);">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Blocked Users</div><div style="font-size:0.72rem;color:#8E8E93;margin-top:2px;">Review people you previously blocked</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,0,0,0.06);">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#FF3B30;">Delete account</div><div style="font-size:0.72rem;color:#8E8E93;margin-top:2px;">Permanently remove your photos and profile</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;">
+                <div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Logout</div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+            </div>
+            <div style="font-size:0.8rem;font-weight:700;color:#636366;padding:0.75rem 1.1rem 0.35rem;text-transform:uppercase;letter-spacing:0.06em;">Display</div>
+            <div style="background:#fff;border-radius:14px;margin:0 0.75rem;overflow:hidden;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,0,0,0.06);">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Wallpaper</div><div style="font-size:0.72rem;color:#8E8E93;margin-top:2px;">Change the background color of the conversation</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Theme</div><div style="font-size:0.72rem;color:#8E8E93;margin-top:2px;">Light</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+            </div>
+            <div style="font-size:0.8rem;font-weight:700;color:#636366;padding:0.75rem 1.1rem 0.35rem;text-transform:uppercase;letter-spacing:0.06em;">Security</div>
+            <div style="background:#fff;border-radius:14px;margin:0 0.75rem 1rem;overflow:hidden;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;border-bottom:1px solid rgba(0,0,0,0.06);">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Two-Factor Authentication</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem;">
+                <div><div style="font-size:0.85rem;font-weight:600;color:#1C1C1E;">Change Password</div></div>
+                <span style="color:#C0392B;">›</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MESSAGES VIEW (hidden initially) -->
+        <div class="app-bg" id="phone-messages-view" style="display:none; position:absolute; inset:0; padding-top:0;">
+          <div style="display:flex;flex-direction:column;height:100%;padding-top:46px;">
+            <div class="app-topbar">
+              <span style="font-size:1rem;font-weight:800;color:#1C1C1E">Messages</span>
+              <button class="app-icon-btn">✏️</button>
+            </div>
+            <div class="chat-search">
+              <input type="text" placeholder="🔍  Search conversations..." />
+            </div>
+            <div class="chat-list" style="flex:1;">
+              <div class="chat-item" onclick="showActiveChat('Sarah Jensen','sarah_j')">
+                <div class="chat-avatar av-r">S</div>
+                <div class="chat-info">
+                  <div class="chat-name">Sarah Jensen</div>
+                  <div class="chat-preview">Afternoon bliss in Paris ☀️ loved it!</div>
+                </div>
+                <div class="chat-meta">
+                  <div class="chat-time">2m</div>
+                  <div class="chat-badge">3</div>
+                </div>
+              </div>
+              <div class="chat-item" onclick="showActiveChat('Mike D','mike.adventures')">
+                <div class="chat-avatar av-b">M</div>
+                <div class="chat-info">
+                  <div class="chat-name">Mike D</div>
+                  <div class="chat-preview">Sounds great! See you at the summit</div>
+                </div>
+                <div class="chat-meta">
+                  <div class="chat-time">1hr</div>
+                  <div class="chat-badge">1</div>
+                </div>
+              </div>
+              <div class="chat-item">
+                <div class="chat-avatar av-g">A</div>
+                <div class="chat-info">
+                  <div class="chat-name">Alex Patel</div>
+                  <div class="chat-preview">You: Can't wait for tonight! 🎉</div>
+                </div>
+                <div class="chat-meta"><div class="chat-time">3hr</div></div>
+              </div>
+              <div class="chat-item">
+                <div class="chat-avatar av-p">C</div>
+                <div class="chat-info">
+                  <div class="chat-name">Chloe S</div>
+                  <div class="chat-preview">That photo is stunning 😍</div>
+                </div>
+                <div class="chat-meta"><div class="chat-time">5hr</div></div>
+              </div>
+              <div class="chat-item">
+                <div class="chat-avatar av-o">J</div>
+                <div class="chat-info">
+                  <div class="chat-name">Jake Rivera</div>
+                  <div class="chat-preview">See you at the coffee shop!</div>
+                </div>
+                <div class="chat-meta"><div class="chat-time">1d</div></div>
+              </div>
+            </div>
+            <div class="bottom-nav">
+              <div class="nav-item" onclick="showPhoneHome()">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+              <div class="nav-cta"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+              <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVE CHAT VIEW -->
+        <div class="app-bg" id="phone-chat-view" style="display:none;position:absolute;inset:0;padding-top:46px;">
+          <div class="active-chat" style="height:100%;">
+            <div class="active-chat-header">
+              <span class="active-chat-back" onclick="showPhoneMessages()">‹</span>
+              <div class="active-chat-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C0392B,#E74C3C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem;" id="chat-av">S</div>
+              <div class="active-chat-info" style="margin-left:0.5rem;">
+                <div class="active-chat-name" id="chat-name">Sarah Jensen</div>
+                <div class="active-chat-status">● online</div>
+              </div>
+              <button class="app-icon-btn" style="margin-left:auto;">📹</button>
+            </div>
+            <div class="chat-messages">
+              <div class="msg recv"><div class="msg-bubble">Hey! Did you see my Paris story? 🗼</div><div class="msg-time">2:15 PM</div></div>
+              <div class="msg sent"><div class="msg-bubble">Yes! It was absolutely stunning 😍 When did you get there?</div><div class="msg-time">2:17 PM</div></div>
+              <div class="msg recv"><div class="msg-bubble">Just arrived yesterday. The light in the afternoon is incredible here ☀️</div><div class="msg-time">2:18 PM</div></div>
+              <div class="msg sent"><div class="msg-bubble">You're making me want to book a flight right now lol</div><div class="msg-time">2:19 PM</div></div>
+              <div class="msg recv"><div class="msg-bubble">Do it!! Come visit 🥐</div><div class="msg-time">2:20 PM</div></div>
+            </div>
+            <div class="chat-input-bar">
+              <input class="chat-input" type="text" placeholder="Type a message..." />
+              <button class="chat-send-btn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TABLET STAGE ═══════════ -->
+<div class="device-stage" id="stage-tablet">
+  <div class="tablet-outer">
+    <div class="tablet-cam"></div>
+    <div class="tablet-screen">
+      <div class="tablet-app">
+        <!-- Sidebar -->
+        <div class="tablet-sidebar">
+          <div class="tablet-logo">
+            <div class="tablet-logo-sq">Q</div>
+            <span class="tablet-logo-name">Qonek</span>
+          </div>
+          <div class="tablet-nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Home
+          </div>
+          <div class="tablet-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Explore
+          </div>
+          <div class="tablet-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Messages
+          </div>
+          <div class="tablet-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Alerts
+          </div>
+          <div class="tablet-nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </div>
+        </div>
+        <!-- Main Feed -->
+        <div class="tablet-main">
+          <div class="story-strip">
+            <div class="story-item"><div class="story-add-btn">+</div><span class="story-label" style="color:#8E8E93">You</span></div>
+            <div class="story-item"><div class="story-ring"><div class="story-avatar av-r"><span style="color:#fff;font-weight:700">S</span></div></div><span class="story-label">sarah_j</span></div>
+            <div class="story-item"><div class="story-ring"><div class="story-avatar av-b"><span style="color:#fff;font-weight:700">M</span></div></div><span class="story-label">mike.d</span></div>
+            <div class="story-item"><div class="story-ring"><div class="story-avatar av-g"><span style="color:#fff;font-weight:700">A</span></div></div><span class="story-label">alex.p</span></div>
+            <div class="story-item"><div class="story-ring unseen"><div class="story-avatar av-p"><span style="color:#fff;font-weight:700">C</span></div></div><span class="story-label">chloe.s</span></div>
+          </div>
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-user"><div class="post-avatar av-r">S</div><div><div class="post-name">sarah_j</div><div class="post-time">2 min ago</div></div></div>
+              <span class="post-more">···</span>
+            </div>
+            <img class="img-post" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&q=80&fit=crop" alt="Post" loading="lazy" />
+            <div class="post-caption"><b>sarah_j</b> Afternoon bliss in Paris ☀️ #travel</div>
+            <div class="post-actions">
+              <div class="post-action-left">
+                <span class="p-act liked"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> 3.1k</span>
+                <span class="p-act"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 412</span>
+              </div>
+            </div>
+          </div>
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-user"><div class="post-avatar av-b">M</div><div><div class="post-name">mike.adventures</div><div class="post-time">1hr ago</div></div></div>
+              <span class="post-more">···</span>
+            </div>
+            <img class="img-post" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80&fit=crop" alt="Post" loading="lazy" />
+            <div class="post-caption"><b>mike.adventures</b> Summit achieved! 🏔️ #hiking</div>
+            <div class="post-actions">
+              <div class="post-action-left">
+                <span class="p-act"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none"/></svg> 892</span>
+                <span class="p-act"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 67</span>
+              </div>
+            </div>
+          </div>
+          <div style="height:80px"></div>
+        </div>
+        <!-- Right: DMs -->
+        <div class="tablet-right">
+          <div class="tablet-right-title">Messages</div>
+          <div class="chat-list" style="flex:1;">
+            <div class="chat-item"><div class="chat-avatar av-r">S</div><div class="chat-info"><div class="chat-name">Sarah J</div><div class="chat-preview">Come visit Paris! 🥐</div></div><div class="chat-meta"><div class="chat-time">2m</div><div class="chat-badge">3</div></div></div>
+            <div class="chat-item"><div class="chat-avatar av-b">M</div><div class="chat-info"><div class="chat-name">Mike D</div><div class="chat-preview">See you at the summit</div></div><div class="chat-meta"><div class="chat-time">1hr</div></div></div>
+            <div class="chat-item"><div class="chat-avatar av-g">A</div><div class="chat-info"><div class="chat-name">Alex P</div><div class="chat-preview">You: Can't wait! 🎉</div></div><div class="chat-meta"><div class="chat-time">3hr</div></div></div>
+            <div class="chat-item"><div class="chat-avatar av-p">C</div><div class="chat-info"><div class="chat-name">Chloe S</div><div class="chat-preview">That photo is stunning 😍</div></div><div class="chat-meta"><div class="chat-time">5hr</div></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Tablet bottom nav -->
+      <div class="bottom-nav" style="position:absolute;bottom:8px;left:8px;right:8px;">
+        <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="nav-cta"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LAPTOP STAGE ═══════════ -->
+<div class="device-stage" id="stage-laptop">
+  <div class="laptop-wrapper">
+    <div class="laptop-outer">
+      <div class="laptop-cam-bar"><div class="laptop-cam-dot"></div></div>
+      <div class="laptop-screen">
+        <div class="laptop-app">
+          <!-- Icon Sidebar -->
+          <div class="laptop-sidebar">
+            <div class="laptop-logo-sq">Q</div>
+            <button class="laptop-nav-icon active" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></button>
+            <button class="laptop-nav-icon" title="Explore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+            <button class="laptop-nav-icon" title="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+            <button class="laptop-nav-icon" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+            <button class="laptop-nav-icon" title="Profile" style="margin-top:auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+          </div>
+          <!-- Feed -->
+          <div class="laptop-feed">
+            <div class="laptop-feed-header">
+              <span class="laptop-feed-title">Home</span>
+            </div>
+            <div class="story-strip" style="padding:0.75rem;">
+              <div class="story-item"><div class="story-add-btn" style="width:48px;height:48px">+</div><span class="story-label">You</span></div>
+              <div class="story-item"><div class="story-ring" style="width:48px;height:48px"><div class="story-avatar av-r"><span style="color:#fff;font-weight:700;font-size:0.8rem">S</span></div></div><span class="story-label">sarah</span></div>
+              <div class="story-item"><div class="story-ring" style="width:48px;height:48px"><div class="story-avatar av-b"><span style="color:#fff;font-weight:700;font-size:0.8rem">M</span></div></div><span class="story-label">mike</span></div>
+              <div class="story-item"><div class="story-ring" style="width:48px;height:48px"><div class="story-avatar av-g"><span style="color:#fff;font-weight:700;font-size:0.8rem">A</span></div></div><span class="story-label">alex</span></div>
+              <div class="story-item"><div class="story-ring" style="width:48px;height:48px"><div class="story-avatar av-p"><span style="color:#fff;font-weight:700;font-size:0.8rem">C</span></div></div><span class="story-label">chloe</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;padding:0 0.75rem;">
+              <div class="post-card" style="margin:0;">
+                <div class="post-header"><div class="post-user"><div class="post-avatar av-r" style="width:28px;height:28px;font-size:0.75rem">S</div><div><div class="post-name" style="font-size:0.75rem">sarah_j</div></div></div></div>
+                <img class="img-post" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80&fit=crop" alt="Post" loading="lazy" style="aspect-ratio:1/1;" />
+                <div class="post-actions" style="padding:0.4rem 0.75rem 0.6rem;"><div class="post-action-left"><span class="p-act liked" style="font-size:0.7rem"><svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>3.1k</span><span class="p-act" style="font-size:0.7rem"><svg viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>412</span></div></div>
+              </div>
+              <div class="post-card" style="margin:0;">
+                <div class="post-header"><div class="post-user"><div class="post-avatar av-b" style="width:28px;height:28px;font-size:0.75rem">M</div><div><div class="post-name" style="font-size:0.75rem">mike.d</div></div></div></div>
+                <img class="img-post" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80&fit=crop" alt="Post" loading="lazy" style="aspect-ratio:1/1;" />
+                <div class="post-actions" style="padding:0.4rem 0.75rem 0.6rem;"><div class="post-action-left"><span class="p-act" style="font-size:0.7rem"><svg viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none"/></svg>892</span></div></div>
+              </div>
+            </div>
+            <div style="height:1rem"></div>
+          </div>
+          <!-- Right Panel -->
+          <div class="laptop-right">
+            <div class="laptop-right-header">Trending Users</div>
+            <div class="laptop-trending">
+              <div class="trending-item"><div class="trending-avatar av-r">S</div><div><div class="trending-name">Sarah Jensen</div><div class="trending-handle">@sarah_j · 230K</div></div><button class="follow-btn">Follow</button></div>
+              <div class="trending-item"><div class="trending-avatar av-b">M</div><div><div class="trending-name">Mike D</div><div class="trending-handle">@mike.d · 189K</div></div><button class="follow-btn">Follow</button></div>
+              <div class="trending-item"><div class="trending-avatar av-g">A</div><div><div class="trending-name">Alex Patel</div><div class="trending-handle">@alex.p · 127K</div></div><button class="follow-btn">Follow</button></div>
+              <div class="trending-item"><div class="trending-avatar av-p">C</div><div><div class="trending-name">Chloe S</div><div class="trending-handle">@chloe.s · 98K</div></div><button class="follow-btn">Follow</button></div>
+            </div>
+            <div style="border-top:1px solid rgba(0,0,0,0.07);margin-top:0.75rem;">
+              <div class="laptop-right-header">Direct Messages</div>
+              <div class="chat-list">
+                <div class="chat-item"><div class="chat-avatar av-r" style="width:36px;height:36px;font-size:0.85rem">S</div><div class="chat-info"><div class="chat-name" style="font-size:0.8rem">Sarah J</div><div class="chat-preview">Come visit Paris 🥐</div></div><div class="chat-meta"><div class="chat-time">2m</div><div class="chat-badge">3</div></div></div>
+                <div class="chat-item"><div class="chat-avatar av-b" style="width:36px;height:36px;font-size:0.85rem">M</div><div class="chat-info"><div class="chat-name" style="font-size:0.8rem">Mike D</div><div class="chat-preview">"Sounds great!"</div></div><div class="chat-meta"><div class="chat-time">1hr</div></div></div>
+                <div class="chat-item"><div class="chat-avatar av-o" style="width:36px;height:36px;font-size:0.85rem">J</div><div class="chat-info"><div class="chat-name" style="font-size:0.8rem">Jake R</div><div class="chat-preview">"Meeting at 5?"</div></div><div class="chat-meta"><div class="chat-time">3hr</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="laptop-base">
+      <div class="laptop-notch-base"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SPECS SECTION -->
+<section class="specs-section">
+  <div class="specs-label">Design System</div>
+  <h2 class="specs-title">Built to <em>Apple standards</em></h2>
+  <div class="specs-grid">
+    <div class="spec-card">
+      <div class="spec-icon">🎨</div>
+      <h3 class="spec-heading">Crimson Red Identity</h3>
+      <p class="spec-body">Primary accent #A62C37 used consistently across CTAs, active states, story rings, and message bubbles for a cohesive brand language.</p>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">🔲</div>
+      <h3 class="spec-heading">Floating Bottom Nav</h3>
+      <p class="spec-body">Glassmorphism nav bar with centered elevated CTA button — adapts between mobile pill nav and desktop icon sidebar seamlessly.</p>
+    </div>
+    <div class="spec-card">
+      <div class="spec-icon">✨</div>
+      <h3 class="spec-heading">Glassmorphism UI</h3>
+      <p class="spec-body">backdrop-blur effects on headers, nav bars, and modals create premium depth and layering without heavy visual clutter.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="preview-cta">
+  <h2>Ready to <em>join</em> Qonek?</h2>
+  <p>Be among the first to experience the full app at launch.</p>
+  <a href="mailto:benyaminnamtalashvili726@gmail.com?subject=Qonek Early Access Request" class="btn-primary">Request Early Access →</a>
+</section>
+
+<script>
+  function switchTab(tab) {
+    // Deactivate all
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.device-stage').forEach(s => s.classList.remove('active'));
+    // Activate selected
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('stage-' + tab).classList.add('active');
+  }
+
+  function allViews() {
+    return ['phone-home-view','phone-chat-view','phone-settings-view'];
+  }
+  function hideAllViews() {
+    allViews().forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }
+  function showPhoneHome() {
+    hideAllViews();
+    document.getElementById('phone-home-view').style.display = 'flex';
+  }
+  function showActiveChat(name) {
+    if (document.getElementById('chat-name')) document.getElementById('chat-name').textContent = name;
+    hideAllViews();
+    document.getElementById('phone-chat-view').style.display = 'flex';
+  }
+  function showSettings() {
+    hideAllViews();
+    document.getElementById('phone-settings-view').style.display = 'block';
+  }
+  function showPhoneMessages() { showPhoneHome(); }
+  function showPhoneChat() { showPhoneHome(); }
+  function setChatTab(btn, tab) {
+    document.querySelectorAll('.chat-tab').forEach(b => {
+      b.style.background = 'transparent';
+      b.style.color = '#8E8E93';
+    });
+    btn.style.background = '#C0392B';
+    btn.style.color = '#fff';
+  }
+</script>
+
+</body>
+</html>
