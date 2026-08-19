@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qonek — Connect. Share. Discover.</title>
+  <meta name="description" content="Qonek is a modern social and chat application. Connect with people, share moments, and discover new communities." />
+  <meta property="og:title" content="Qonek — Connect. Share. Discover." />
+  <meta property="og:description" content="A modern social and chat app. Clean. Fast. Beautiful." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --crimson: #C0392B;
+      --crimson-light: #E74C3C;
+      --crimson-glow: rgba(192, 57, 43, 0.25);
+      --dark: #0D0D0D;
+      --dark-2: #141414;
+      --dark-3: #1C1C1C;
+      --dark-4: #242424;
+      --white: #FFFFFF;
+      --grey: rgba(255,255,255,0.55);
+      --grey-dim: rgba(255,255,255,0.12);
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Instrument Serif', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--dark);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      background: rgba(13,13,13,0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--crimson);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.05em;
+      font-family: var(--font-sans);
+      flex-shrink: 0;
+    }
+
+    .nav-logo-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      border: 1px solid rgba(192,57,43,0.4);
+      background: rgba(192,57,43,0.1);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #FF6B6B;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #FF6B6B;
+      box-shadow: 0 0 8px #FF6B6B;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 1.5rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(192,57,43,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(192,57,43,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 100px;
+      border: 1px solid rgba(192,57,43,0.35);
+      background: rgba(192,57,43,0.08);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #FF7B7B;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .hero-title em {
+      color: var(--crimson-light);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--grey);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.8rem;
+      background: var(--crimson);
+      color: #fff;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 24px rgba(192,57,43,0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--crimson-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(192,57,43,0.5);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.8rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.7);
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(192,57,43,0.5);
+      color: #fff;
+      background: rgba(192,57,43,0.08);
+    }
+
+    /* ── MAIN MOCKUP ── */
+    .mockup-section {
+      padding: 2rem 1.5rem 6rem;
+    }
+
+    .mockup-main {
+      max-width: 1100px;
+      margin: 0 auto;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 40px 120px rgba(0,0,0,0.6),
+        0 0 80px rgba(192,57,43,0.12);
+    }
+
+    .mockup-main img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── FEATURES ── */
+    .features-section {
+      padding: 6rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--crimson-light);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 400;
+      text-align: center;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--crimson-light);
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--grey);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 4rem;
+      line-height: 1.7;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--dark-2);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(192,57,43,0.3);
+      background: var(--dark-3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px rgba(192,57,43,0.1);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(192,57,43,0.15);
+      border: 1px solid rgba(192,57,43,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--grey);
+      line-height: 1.65;
+    }
+
+    /* ── DEVICE GRID ── */
+    .devices-section {
+      padding: 2rem 1.5rem 6rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .devices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .device-card {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: var(--dark-2);
+    }
+
+    .device-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 32px 80px rgba(192,57,43,0.15);
+    }
+
+    .device-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .device-label {
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--grey);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .device-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* ── BRAND STRIP ── */
+    .brand-section {
+      padding: 5rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: var(--dark-2);
+    }
+
+    .brand-logo-big {
+      width: 80px;
+      height: 80px;
+      border-radius: 22px;
+      background: var(--crimson);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #fff;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 12px 40px rgba(192,57,43,0.45);
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand-tagline {
+      font-size: 1.1rem;
+      color: var(--grey);
+      letter-spacing: 0.06em;
+    }
+
+    .brand-colors {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .swatch-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .swatch-hex {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--grey);
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      padding: 8rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(192,57,43,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .cta-title em {
+      font-style: italic;
+      color: var(--crimson-light);
+    }
+
+    .cta-sub {
+      color: var(--grey);
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .footer-logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--crimson);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    footer p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .devices-grid { grid-template-columns: 1fr; }
+      .device-card.full-width { grid-column: auto; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">Q</div>
+      <span class="nav-logo-text">Qonek</span>
+    </a>
+    <div class="nav-badge">Coming Soon</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-eyebrow">Introducing Qonek</div>
+    <h1 class="hero-title">Social. Chat.<br><em>Reimagined.</em></h1>
+    <p class="hero-sub">A modern space to connect with the people who matter, share your world, and discover communities built around real interests.</p>
+    <div class="hero-ctas">
+      <a href="preview.html" class="btn-primary">Get Early Access →</a>
+      <a href="#screens" class="btn-ghost">View Screens ↓</a>
+    </div>
+  </section>
+
+  <!-- MAIN MOCKUP -->
+  <section class="mockup-section" id="screens">
+    <div class="mockup-main">
+      <img src="/assets/qonek_presentation_board-BMexCih-.jpg" alt="Qonek — Cross-platform UI across MacBook, iPad and iPhone" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="section-label">Why Qonek</div>
+    <h2 class="section-title">Built for <em>real</em> connection</h2>
+    <p class="section-sub">Everything you need to stay close with the people and communities that matter to you.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3 class="feature-title">Direct Messaging</h3>
+        <p class="feature-desc">Fast, clean, end-to-end encrypted chat. Send messages, photos, and reactions in real time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📸</div>
+        <h3 class="feature-title">Story Feed</h3>
+        <p class="feature-desc">Horizontal story circles front and center. See what your network is sharing before anything else.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3 class="feature-title">Discover</h3>
+        <p class="feature-desc">Surface trending creators, topics, and communities tailored to your interests — not an algorithm.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3 class="feature-title">Smart Notifications</h3>
+        <p class="feature-desc">Only the updates that matter. Grouped, prioritised, and never overwhelming.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3 class="feature-title">Beautiful UI</h3>
+        <p class="feature-desc">Apple-level polish across iOS, Android, and web. One cohesive design language everywhere.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">Blazing Fast</h3>
+        <p class="feature-desc">Built on modern infrastructure. Instant load, zero lag, even on slower connections.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEVICE SCREENS -->
+  <section class="devices-section">
+    <div class="section-label">All Platforms</div>
+    <h2 class="section-title" style="text-align:center; margin-bottom:0.5rem;">Every screen. <em>Perfect.</em></h2>
+    <p class="section-sub">Designed pixel-perfect for every device you own.</p>
+
+    <div class="devices-grid">
+      <div class="device-card full-width">
+        <img src="/assets/qonek_macbook-BifkLTun.jpg" alt="Qonek Web Dashboard on MacBook Pro" loading="lazy" />
+        <div class="device-label">🖥 MacBook Pro — Web Dashboard</div>
+      </div>
+      <div class="device-card">
+        <img src="/assets/qonek_ipad-BkILqWQN.jpg" alt="Qonek Social Feed on iPad Pro" loading="lazy" />
+        <div class="device-label">📱 iPad Pro — Social Feed</div>
+      </div>
+      <div class="device-card">
+        <img src="/assets/qonek_iphone-C15hgFPs.jpg" alt="Qonek Chat Interface on iPhone 15 Pro" loading="lazy" />
+        <div class="device-label">📱 iPhone 15 Pro — Chat</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND STRIP -->
+  <section class="brand-section">
+    <div class="brand-logo-big">Q</div>
+    <div class="brand-name">Qonek</div>
+    <div class="brand-tagline">Connect. Share. Discover.</div>
+    <div class="brand-colors">
+      <div class="color-swatch">
+        <div class="swatch-box" style="background:#C0392B;"></div>
+        <span class="swatch-hex">#C0392B</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-box" style="background:#E74C3C;"></div>
+        <span class="swatch-hex">#E74C3C</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-box" style="background:#0D0D0D; border:1px solid rgba(255,255,255,0.15);"></div>
+        <span class="swatch-hex">#0D0D0D</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-box" style="background:#FFFFFF;"></div>
+        <span class="swatch-hex">#FFFFFF</span>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-box" style="background:#1C1C1E; border:1px solid rgba(255,255,255,0.1);"></div>
+        <span class="swatch-hex">#1C1C1E</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-title">Be the first<br>to <em>experience</em> it.</h2>
+    <p class="cta-sub">Join the waitlist and get early access when we launch.</p>
+    <a href="mailto:benyaminnamtalashvili726@gmail.com?subject=Qonek Early Access" class="btn-primary" style="font-size:1rem; padding:1rem 2.2rem;">
+      Request Early Access →
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      <div class="footer-logo-icon">Q</div>
+      <span style="font-size:0.9rem; font-weight:700;">Qonek</span>
+    </div>
+    <p>© 2026 Qonek. Designed by Benyamin Namtalashvili.</p>
+    <p style="color:rgba(255,255,255,0.25); font-size:0.78rem;">Concept · Not yet released</p>
+  </footer>
+
+</body>
+</html>
