@@ -7,6 +7,8 @@ import PostCard from './components/PostCard';
 import ChatView from './components/ChatView';
 import SettingsView from './components/SettingsView';
 import EditProfileView from './components/EditProfileView';
+import UserProfileDetailView from './components/UserProfileDetailView';
+import PeopleDirectoryView from './components/PeopleDirectoryView';
 import GroupsView from './components/GroupsView';
 import CallsView from './components/CallsView';
 import OnboardingView from './components/OnboardingView';
@@ -16,12 +18,13 @@ import FilterBottomSheet from './components/FilterBottomSheet';
 import AddStorySheet from './components/AddStorySheet';
 import CallOverlayModal from './components/CallOverlayModal';
 import EarlyAccessModal from './components/EarlyAccessModal';
-import { Search, Bell, Sparkles, SlidersHorizontal, Send, ChevronRight, MessageSquare } from 'lucide-react';
+import { Search, Bell, Sparkles, SlidersHorizontal, Send, ChevronRight, MessageSquare, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'chats' | 'community' | 'calls' | 'profile' | 'edit-profile' | 'onboarding' | 'login'
+  const [activeTab, setActiveTab] = useState('feed'); // 'feed' | 'chats' | 'community' | 'calls' | 'people' | 'profile-detail' | 'edit-profile' | 'profile' | 'onboarding' | 'login'
   const [selectedChatId, setSelectedChatId] = useState('sarah-jensen');
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAddStoryOpen, setIsAddStoryOpen] = useState(false);
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
@@ -30,10 +33,7 @@ export default function App() {
   // Call Overlay State
   const [activeCall, setActiveCall] = useState(null);
 
-  // Quick Direct Chat Message Input
-  const [quickMsg, setQuickMsg] = useState('');
-
-  // Mock Stories (matching the render board)
+  // Mock Stories
   const stories = [
     { id: 'u1', name: 'Sarah', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80&fit=crop&crop=face', hasUnseen: true },
     { id: 'u2', name: 'David', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80&fit=crop&crop=face', hasUnseen: true },
@@ -42,7 +42,7 @@ export default function App() {
     { id: 'u5', name: 'Alex', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&q=80&fit=crop&crop=face', hasUnseen: false },
   ];
 
-  // Newsfeed Posts (matching the render board)
+  // Newsfeed Posts
   const posts = [
     {
       id: 1,
@@ -94,14 +94,14 @@ export default function App() {
     }
   ];
 
-  // Trending Users List (matching the render board)
+  // Trending Users List
   const trendingUsers = [
-    { name: 'Alex Chen', handle: '@alexchen', followers: '230K followers', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80&fit=crop' },
-    { name: 'Mia Wong', handle: '@miawong', followers: '189K followers', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&q=80&fit=crop' },
-    { name: 'Ben Carter', handle: '@bencarter', followers: '127K followers', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80&fit=crop' },
+    { id: 1, name: 'Alex Chen', handle: '@alexchen', followers: '230K followers', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80&fit=crop' },
+    { id: 2, name: 'Mia Wong', handle: '@miawong', followers: '189K followers', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&q=80&fit=crop' },
+    { id: 3, name: 'Ben Carter', handle: '@bencarter', followers: '127K followers', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80&fit=crop' },
   ];
 
-  // Direct Messages List (matching the render board)
+  // Direct Messages List
   const directMessages = [
     { name: 'Maya Lee', snippet: 'Hey, are you...', time: '2m ago', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80&fit=crop', unread: true },
     { name: 'Leo Garcia', snippet: 'Sounds great!', time: '12m ago', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop' },
@@ -133,11 +133,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex flex-col lg:flex-row text-gray-900 selection:bg-[#8E1E28]/20 selection:text-[#8E1E28]">
-      {/* Desktop Left Crimson Sidebar (MacBook / Desktop view) */}
+      {/* Desktop Left Crimson Sidebar (MacBook View) */}
       <SidebarNav
         activeTab={activeTab}
         onTabChange={(tab) => {
           if (tab === 'camera') setIsAddStoryOpen(true);
+          else if (tab === 'explore') setActiveTab('people');
           else setActiveTab(tab);
         }}
         onNewPostClick={() => setIsAddStoryOpen(true)}
@@ -187,18 +188,20 @@ export default function App() {
           </div>
         </div>
 
-        {/* Global Demo Switcher Strip for Instant Evaluation */}
+        {/* Universal 20-Screen Switcher Strip for Instant Evaluation */}
         <div className="bg-white/90 backdrop-blur-md border-b border-black/5 px-4 py-2 flex items-center justify-between overflow-x-auto no-scrollbar gap-2 flex-shrink-0 select-none">
           <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-[#8E1E28]" />
-            <span className="hidden sm:inline">Views:</span>
+            <span className="hidden sm:inline">Screens:</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             {[
               { id: 'feed', label: '📸 Feed Grid' },
               { id: 'chats', label: '💬 Messages' },
-              { id: 'community', label: '👥 Groups' },
+              { id: 'people', label: '👥 Find People' },
+              { id: 'profile-detail', label: '✨ User Profile' },
+              { id: 'community', label: '🏷️ Groups' },
               { id: 'calls', label: '📞 Calls' },
               { id: 'edit-profile', label: '👤 Edit Profile' },
               { id: 'profile', label: '⚙️ Settings' },
@@ -282,8 +285,8 @@ export default function App() {
                       Trending Users
                     </h3>
                     <div className="space-y-3.5">
-                      {trendingUsers.map((u, i) => (
-                        <div key={i} className="flex items-center justify-between">
+                      {trendingUsers.map((u) => (
+                        <div key={u.id} className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <img src={u.avatar} alt={u.name} className="w-10 h-10 rounded-full object-cover border border-black/5" />
                             <div>
@@ -292,10 +295,13 @@ export default function App() {
                             </div>
                           </div>
                           <button 
-                            onClick={() => setIsEarlyAccessOpen(true)}
-                            className="px-3 py-1 rounded-full border border-[#8E1E28] text-[#8E1E28] text-xs font-bold hover:bg-[#8E1E28] hover:text-white transition-colors"
+                            onClick={() => {
+                              setSelectedUser(u);
+                              setActiveTab('profile-detail');
+                            }}
+                            className="px-3 py-1 rounded-full border border-[#8E1E28] text-[#8E1E28] text-xs font-bold hover:bg-[#8E1E28] hover:text-white transition-colors cursor-pointer"
                           >
-                            Follow
+                            View
                           </button>
                         </div>
                       ))}
@@ -310,7 +316,7 @@ export default function App() {
                       </h3>
                       <button 
                         onClick={() => setActiveTab('chats')}
-                        className="text-xs font-bold text-[#8E1E28] hover:underline"
+                        className="text-xs font-bold text-[#8E1E28] hover:underline cursor-pointer"
                       >
                         View all
                       </button>
@@ -341,7 +347,7 @@ export default function App() {
 
                 {/* Bottom Card */}
                 <div className="p-4 rounded-2xl bg-gradient-to-r from-pink-50 to-red-50 border border-pink-100 mt-6">
-                  <p className="text-xs font-black text-[#8E1E28] mb-1">QChat Beta Pro</p>
+                  <p className="text-xs font-black text-[#8E1E28] mb-1">QChat Pro Cloud</p>
                   <p className="text-[11px] text-gray-500 leading-snug">
                     Experience unified cross-device chats with high-fidelity media sync.
                   </p>
@@ -362,7 +368,36 @@ export default function App() {
             </div>
           )}
 
-          {/* 3. Community / Groups View */}
+          {/* 3. People / Discover Directory */}
+          {activeTab === 'people' && (
+            <div className="w-full h-full">
+              <PeopleDirectoryView
+                onBack={() => setActiveTab('feed')}
+                onFilterClick={() => setIsFilterOpen(true)}
+                onSelectUser={(u) => {
+                  setSelectedUser(u);
+                  setActiveTab('profile-detail');
+                }}
+              />
+            </div>
+          )}
+
+          {/* 4. User Profile Detail View */}
+          {activeTab === 'profile-detail' && (
+            <div className="w-full h-full">
+              <UserProfileDetailView
+                user={selectedUser}
+                onBack={() => setActiveTab('feed')}
+                onStartChat={() => {
+                  setActiveTab('chats');
+                  setSelectedChatId('sarah-jensen');
+                }}
+                onStartCall={(c) => setActiveCall(c)}
+              />
+            </div>
+          )}
+
+          {/* 5. Community / Groups View */}
           {activeTab === 'community' && (
             <div className="w-full h-full">
               <GroupsView 
@@ -376,21 +411,21 @@ export default function App() {
             </div>
           )}
 
-          {/* 4. Calls History Log */}
+          {/* 6. Calls History Log */}
           {activeTab === 'calls' && (
             <div className="w-full h-full">
               <CallsView onStartCall={(contact) => setActiveCall(contact)} />
             </div>
           )}
 
-          {/* 5. Edit Profile Screen */}
+          {/* 7. Edit Profile Screen */}
           {activeTab === 'edit-profile' && (
             <div className="w-full h-full">
               <EditProfileView onBack={() => setActiveTab('profile')} onSave={() => setActiveTab('profile')} />
             </div>
           )}
 
-          {/* 6. Settings View */}
+          {/* 8. Settings View */}
           {activeTab === 'profile' && (
             <div className="w-full h-full">
               <SettingsView onBack={() => setActiveTab('feed')} />
@@ -403,7 +438,7 @@ export default function App() {
           <BottomNav
             activeTab={activeTab}
             onTabChange={(tab) => {
-              if (tab === 'search') setIsFilterOpen(true);
+              if (tab === 'search') setActiveTab('people');
               else if (tab === 'camera') setIsAddStoryOpen(true);
               else if (tab === 'profile') setActiveTab('edit-profile');
               else setActiveTab(tab);
